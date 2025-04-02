@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "branches": [
+    "*"
+  ],
+  "applications": [
+    {
+      "name": "evm-json-rpc",
+      "description": "A Json-Rpc API for EVM-compatible chains",
+      "version": "0.1.0",
+      "rootDir": "/apps/evm-json-rpc"
+    }
+  ]
+}
