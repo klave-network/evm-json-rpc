@@ -1,80 +1,63 @@
-# Klave App EVM Light Client
-Use this template to help you scaffold a new EVM Light Client application.
+# EVM JSON-RPC Client
+
+This Rust-based template provides a foundation for interacting with Ethereum-based blockchains using JSON-RPC methods. It supports querying blockchain data, estimating gas, fetching transaction details, and other key Ethereum functionalities.
 
 ## Usage
-Klave aims to make it easy to build and deploy WebAssembly application within Trusted Execution Environments (TEEs) and leverage the latest
-developments in the [WebAssembly component model](https://github.com/WebAssembly/component-model) and [Wasmtime](https://wasmtime.dev/) runtime.
-For a more detailed documentation, please read the [Klave docs](https://docs.klave.com/sdk/latest).
+
+The EVM JSON-RPC Client enables developers to interact with Ethereum-based blockchains using a set of predefined RPC methods. It does not include wallet-specific routes but focuses on retrieving blockchain information and executing calls to smart contracts.
 
 ## Prerequisites
-To use and build this template the following tools must be installed:
-- The [Rust Toolchain](https://www.rust-lang.org/tools/install) (incl. rust, rustup, cargo)
-- Cargo component : `cargo install cargo-component`
-- `wasm32-unknown-unknown` target : `rustup target add wasm32-unknown-unknown`
 
-## Wasm component
-Klave apps are `wasm component`.
-In this template, three methods are implemented, registered and exposed: 
-You can see these methods exposed in the `wit` [interface](https://github.com/klave-network/evm-json-rpc/blob/main/apps/evm-json-rpc/wit/world.wit):
-- `export register-routes: func();`
-- `export load-from-ledger: func(cmd: string);`
-- `export insert-in-ledger: func(cmd: string);`
+To build and use this template, you need the following tools installed:
 
-1 - The point of entry of the App is the `lib.rs` file and must expose the guest `wasm component` implementation:
+- **Rust Toolchain**: Includes `rust`, `rustup`, and `cargo`. [Install Rust](https://www.rust-lang.org/tools/install)
+- **Cargo Component**: Install via `cargo install cargo-component`
+- **WASM Target**: Add the target with `rustup target add wasm32-unknown-unknown`
 
-```Rust
-#[allow(warnings)]
-mod bindings;
+## Wasm Component
 
-use bindings::Guest;
-use klave;
-struct Component;
+Klave applications are built as WebAssembly (WASM) components. The following methods are implemented and exposed in the `evm-json-rpc` component:
 
-impl Guest for Component {
-
-    fn register_routes(){
-        // By convention it is better to register the route with their wit names.
-        // It means replacing the `_` by `-`
-        // To call your routes make sure you use the naming you have registered them with.
-        klave::router::add_user_query("your-query-1");
-        klave::router::add_user_transaction("your-transaction-1");
-    }
-
-    fn your_query_1(cmd: String){
-        // implement your Query
-    }
-
-    fn your_transaction_1(cmd: String){
-        // Implement your Transaction
-    }
-}
-
-bindings::export!(Component with_types_in bindings);
+```rust
+- register-routes: Registers the available routes.
+- network-add: Adds a new network.
+- network-set-chain-id: Sets the chain ID for a network.
+- network-set-gas-price: Sets the gas price for a network.
+- networks-all: Lists all configured networks.
+- eth-block-number: Retrieves the latest block number.
+- eth-get-block-by-number: Fetches block details by block number.
+- eth-gas-price: Retrieves the current gas price.
+- eth-estimate-gas: Estimates the gas required for a transaction.
+- eth-call-contract: Executes a call to a smart contract.
+- eth-protocol-version: Retrieves the Ethereum protocol version.
+- eth-chain-id: Fetches the chain ID of the connected network.
+- eth-get-transaction-by-hash: Retrieves transaction details using its hash.
+- eth-get-transaction-receipt: Fetches the receipt for a transaction.
+- eth-get-transaction-count: Retrieves the number of transactions sent from an address.
+- web-client-version: Returns the current version of the client.
+- web-sha3: Computes the Keccak-256 hash of the input.
+- net-version: Retrieves the network version.
+- get-sender: Returns the sender address.
+- get-trusted-time: Provides a trusted timestamp.
 ```
-Make sure to register each Query or Transaction you want to expose via the `register_routes` method.
 
-2 - Expose your `wasm component` interface in the `wit` file.
+## Deploying Your App on Klave
 
-```wit
-package component:evm-json-rpc;
+To deploy your application on Klave:
 
-/// An example world for the component to target.
-world evm-json-rpc {
-    export register-routes: func();
-    ...
-}
-```
-3 - Deploy Your App on Klave
+1. **Build the Application**:
+   ```sh
+   cargo component build --target wasm32-unknown-unknown --release
+   ```
+   This command generates the WASM files in the `target/wasm32-unknown-unknown/release/` directory.
 
-[![Deploy on Klave](https://klave.com/images/deploy-on-klave.svg)](https://app.klave.com/login)
-
-4 - You can also build locally
-`cargo component build --target wasm32-unknown-unknown --release`
-this also create a `target` folder with the built wasm files in  `target\wasm32-unknown-unknown\release\`
+2. **Deploy to Klave**: Follow the deployment instructions provided in the [Klave documentation](https://docs.klave.com/deployment).
 
 ## Authors
 
-This template is created by [Klave](https://klave.com) and [Secretarium](https://secretarium.com) team members, with contributions from:
+This template is created by Klave and Secretarium team members, with contributions from:
 
-- Jeremie Labbe ([@jlabbeklavo](https://github.com/jlabbeKlavo)) - [Klave](https://klave.com) | [Secretarium](https://secretarium.com)
-- Etienne Bosse ([@Gosu14](https://github.com/Gosu14)) - [Klave](https://klave.com) | [Secretarium](https://secretarium.com)
+- Jeremie Labbe ([@jlabbeklavo](https://github.com/jlabbeklavo)) - Klave | Secretarium
+
+For more information and support, refer to the [Klave documentation](https://docs.klave.com) or contact the authors.
+
